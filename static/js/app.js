@@ -6,6 +6,14 @@
 
 
 
+d3.json("data/samples.json").then(function(data) {
+    console.log(data);
+});
+
+// console.log(data); 
+
+
+
 //Horizontal Bar   from 2-09
 
 // let sortedByGreekSearch = data.sort((a, b) => b.greekSearchResults - a.greekSearchResults);
