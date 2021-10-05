@@ -1,4 +1,4 @@
-function retrievePlot(name) {
+function getPlot(name) {
 
     //  json 
     d3.json("./data/samples.json").then((data) => {
