@@ -1,217 +1,148 @@
+function retrievePlot(name) {
+
+    //  json 
+    d3.json("./data/samples.json").then((data) => {
 
 
 
-// USE D3 TO READ IN 'SAMPLES.JSON'
+
+    const otu_ids = data.otu_ids
+    const otu_labels = data.otu_labels
+    const sample_values = data.sample_values 
 
 
 
+    //tutor         
 
-d3.json("data/samples.json").then(function(data) {
-    console.log(data);
+    // var samples = data.samples.filter( x=> x.id === name)[0];
+    // var sample_values = samples.sample_values.slice(0,10).reverse();
+    
+    // var topTenValues = samples.otu_ids.slice(0,10).reverse();
+    // var otu_id = topTenValues.map(x => "OTU " + x)
+    
+    // var labels = samples.otu_labels.slice(0,10);
+
+
+
+//  Act 3-4
+
+    function init() {
+        var dropDown = d3.select('#selDataset');
+        d3.json("data/samples.json").then((data) => {
+            console.log(data)
+            data.names.forEach(x => {
+                dropDown.append("option").text(x).property("value");
+            });
+            getPlot(data.names[0]);
+            getInfo(data.names[0]);
+        });
+    }
+
+   
+
+//  Act 2-9 
+
+    // bar chart
+    var traceBar = [{
+        x: sample_values,
+        y: otu_id,
+        hovertext: labels,
+        marker: {
+            color: '#d40611'},
+            type: "bar",
+            orientation: "h"
+        }
+        
+    ];
+
+    var layoutBar = {
+        title: "Top 10 OTUs Bar Chart",
+        margin: {
+            l: 100,
+            r: 100,
+            t: 50,
+            b: 50
+        }
+    };
+
+    
+
+    Plotly.newPlot("bar",traceBar,layoutBar);
+
+    // bubble chart
+
+    var traceBubble = [{
+        x: samples.otu_ids,
+        y: samples.sample_values,
+        hovertext: samples.otu_labels
+    }
+];
+
+    var layoutBubble = {
+        title:"Top 10 OTUs Bubble Chart",
+        xaxis:{title: "OTU ID"},
+        yaxis:{title: "Sample Values"},
+        height: 600,
+        width: 1000
+    };
+
+    
+    Plotly.newPlot("bubble",traceBubble,layoutBubble);
+
+
+
+    // pie chart
+
+    var tracePie = [{
+    values: sample_values,
+    labels: otu_id,
+    // display: [otu_labels],
+    // showInLegend: true, ??? 
+    type: 'pie'
+  }
+];
+  
+  var layoutPie = {
+    
+    height: 600,
+    width: 600,
+    
+  };
+  
+  Plotly.newPlot('pie', tracePie, layoutPie)
+
+
 });
 
-// console.log(data); 
+    
+}
 
 
-// var sample_names
-// var sample_values
-// var otu_ids
-// var otu_labels
-//
+//  Act 3-5  tutor  
+// Panel 
+function getInfo(name) {
+    d3.json("data/samples.json").then((data) => {
+        var metadata = data.metadata;
+        console.log(metadata)
+        var result = metadata.filter(x => x.id.toString() === name)[0];
 
+        //  from index html 
 
-// var topTenValues
-// var
+        var info = d3.select('#sample-metadata');
 
+        info.html("");
+        Object.entries(result).forEach((x) => {
+            info.append("h6").text(x[0].toUpperCase() + ": " + x[1] + "\n");
+        });
+    });   
+}
 
+// index optionChanged event 
 
+function optionChanged(name) {
+    getPlot(name);
+    getInfo(name);
+}
 
 
-
-///  init  dropdown   3-10
-
-// Create an array of each country's numbers
-// var us = Object.values(data.us);
-// var uk = Object.values(data.uk);
-// var canada = Object.values(data.canada);
-
-// // Create an array of music provider labels
-// var labels = Object.keys(data.us);
-
-// // Display the default plot
-// function init() {
-//   var data = [{
-//     values: us,
-//     labels: labels,
-//     type: "pie"
-//   }];
-
-//   var layout = {
-//     height: 600,
-//     width: 800
-//   };
-
-//   Plotly.newPlot("pie", data, layout);
-// }
-
-// // On change to the DOM, call getData()
-// d3.selectAll("#selDataset").on("change", getData);
-
-// // Function called by DOM changes
-// function getData() {
-//   var dropdownMenu = d3.select("#selDataset");
-//   // Assign the value of the dropdown menu option to a variable
-//   var dataset = dropdownMenu.property("value");
-//   // Initialize an empty array for the country's data
-//   var data = [];
-
-//   if (dataset == 'us') {
-//       data = us;
-//   }
-//   else if (dataset == 'uk') {
-//       data = uk;
-//   }
-//   else if (dataset == 'canada') {
-//       data = canada;
-//   }
-//   // Call function to update the chart
-//   updatePlotly(data);
-// }
-
-// // Update the restyled plot's values
-// function updatePlotly(newdata) {
-//   Plotly.restyle("pie", "values", [newdata]);
-// }
-
-// init();
-
-
-
-
-
-
-
-//Horizontal Bar   from 2-09
-
-// var data = [{
-//     type: 'bar',
-//     x: [20, 14, 23],
-//     y: ['giraffes', 'orangutans', 'monkeys'],
-//     orientation: 'h'
-//   }];
-  
-//   Plotly.newPlot('myDiv', data);
-
-
-
-
-//from 2-9
-
-// let sortedByGreekSearch = data.sort((a, b) => b.greekSearchResults - a.greekSearchResults);
-
-// // Slice the first 10 objects for plotting
-// slicedData = sortedByGreekSearch.slice(0, 10);
-
-// // Reverse the array to accommodate Plotly's defaults
-// reversedData = slicedData.reverse();
-
-// // Trace1 for the Greek Data
-// let trace1 = {
-//   x: reversedData.map(object => object.greekSearchResults),
-//   y: reversedData.map(object => object.greekName),
-//   text: reversedData.map(object => object.greekName),
-//   name: "Greek",
-//   type: "bar",
-//   orientation: "h"
-// };
-
-// // Data array
-// // `data` has already been defined, so we must choose a new name here:
-// let traceData = [trace1];
-
-// // Apply a title to the layout
-// let layout = {
-//   title: "Greek gods search results",
-//   margin: {
-//     l: 100,
-//     r: 100,
-//     t: 100,
-//     b: 100
-//   }
-// };
-
-// // Render the plot to the div tag with id "plot"
-// // Note that we use `traceData` here, not `data`
-// Plotly.newPlot("plot", traceData, layout);
-
-
-
-
-
-
-// BUBBLE CHART
-
-
-// var trace1 = {
-//     x: [1, 2, 3, 4],
-//     y: [10, 11, 12, 13],
-//     mode: 'markers',
-//     marker: {
-//       size: [40, 60, 80, 100]
-//     }
-//   };
-  
-//   var data = [trace1];
-  
-//   var layout = {
-//     title: 'Marker Size',
-//     showlegend: false,
-//     height: 600,
-//     width: 600
-//   };
-  
-//   Plotly.newPlot('myDiv', data, layout);
-
-
-
-
-// PIE CHART
-
-
-// var data = [{
-//     values: [19, 26, 55],
-//     labels: ['Residential', 'Non-Residential', 'Utility'],
-//     type: 'pie'
-//   }];
-  
-//   var layout = {
-//     height: 400,
-//     width: 500
-//   };
-  
-//   Plotly.newPlot('myDiv', data, layout);
-
-
-
-
-
-// DISPLAY SAMPLE METADATA
-
-// var metadata
-
-
-
-
-
-
-
-
-// DISPLAY KEY-VALUE PAIR FROM METADATA          HTML CARD   DEMOGRAPHIC INFO 
-
-
-
-
-// UPDATE ALL PLOTS  NEW SAMPLE SELECTED  
-
-
-
+init()
