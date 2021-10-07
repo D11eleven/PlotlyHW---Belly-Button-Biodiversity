@@ -1,14 +1,16 @@
 
-
+     // get data from json file ;  top10 val after .reverse()
 function getPlot(name) {
 
-    // getting data from json file ;  top10 val after .reverse()
+   
     d3.json("./data/samples.json").then((data) => {
 
     var samples = data.samples.filter(x => x.id === name)[0];
     var sample_values = samples.sample_values.slice(0,10).reverse();
     
     var topTenValues = samples.otu_ids.slice(0,10).reverse();
+
+    //for chart
     var otu_id = topTenValues.map(x => "OTU " + x)
     
     var labels = samples.otu_labels.slice(0,10);
@@ -130,7 +132,7 @@ function optionChanged(name) {
     getId(name);
     }
 
-
+// populate page on start 
  init();
 
 
